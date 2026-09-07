@@ -1,11 +1,18 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
+import { connectDB } from "./config/db.js";
+
+dotenv.config();
 
 const app = express();
+
+// Kick off DB connection on cold start (cached — see db.js)
+connectDB();
 
 app.use(
   cors({
