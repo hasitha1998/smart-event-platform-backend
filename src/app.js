@@ -11,12 +11,23 @@ dotenv.config();
 
 const app = express();
 
-// Kick off DB connection on cold start (cached — see db.js)
 connectDB();
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://smart-event-platform-frontend.vercel.app",
+];
 
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // allow requests with no origin (e.g. curl, mobile apps, health checks)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
